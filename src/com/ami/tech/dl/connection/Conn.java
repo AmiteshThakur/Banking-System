@@ -6,12 +6,12 @@ import java.sql.*;
 public class Conn {
 
   Connection connection;
-  Statement statement;
+  public Statement statement;
 
   public Conn() {
     try {
         Class.forName("com.mysql.jdbc.Driver");
-        connection=DriverManager.getConnection("jdbc:mysql:///ebs", "root","Ram9691@mitesh");
+        connection=DriverManager.getConnection("jdbc:mysql:///Bank", "root","Ram9691@mitesh");
         statement=connection.createStatement();
     } catch (Exception exception) {
       System.out.println(exception.getMessage());
