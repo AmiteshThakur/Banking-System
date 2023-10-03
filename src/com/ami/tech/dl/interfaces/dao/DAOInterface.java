@@ -6,8 +6,8 @@ public interface DAOInterface{
     public DTOInterface login();
     public void createAccount(DTOInterface dao)throws DAOException;
     public void update(DTOInterface dao)throws DAOException;
-    public void withdraw(DTOInterface dao)throws DAOException;
-    public void deposite(DTOInterface dao)throws DAOException;
+    public void withdraw(DTOInterface dao,String amount,String date_time)throws DAOException;
+    public void deposite(DTOInterface dao,String amount,String date_time)throws DAOException;
     public void accountChange(DTOInterface dao)throws DAOException;
     public void checkStatus(DTOInterface dao)throws DAOException;
     public void deleteAccount(DTOInterface dao)throws DAOException;

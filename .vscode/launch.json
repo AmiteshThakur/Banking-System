@@ -6,6 +6,41 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Login",
+            "request": "launch",
+            "mainClass": "com.ami.tech.fl.Login",
+            "projectName": "Banking-System_f10f05e9"
+        },
+        {
+            "type": "java",
+            "name": "CreateAccount",
+            "request": "launch",
+            "mainClass": "com.ami.tech.fl.CreateAccount",
+            "projectName": "Banking-System_f10f05e9"
+        },
+        {
+            "type": "java",
+            "name": "Home",
+            "request": "launch",
+            "mainClass": "com.ami.tech.fl.Home",
+            "projectName": "Banking-System_f10f05e9"
+        },
+        {
+            "type": "java",
+            "name": "AdminHome",
+            "request": "launch",
+            "mainClass": "com.ami.tech.fl.AdminHome",
+            "projectName": "Banking-System_f10f05e9"
+        },
+        {
+            "type": "java",
+            "name": "UserHome",
+            "request": "launch",
+            "mainClass": "com.ami.tech.fl.UserHome",
+            "projectName": "Banking-System_f10f05e9"
+        },
+        {
+            "type": "java",
             "name": "AdminHome",
             "request": "launch",
             "mainClass": "com.ami.tech.fl.AdminHome",

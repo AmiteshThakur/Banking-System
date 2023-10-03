@@ -8,13 +8,13 @@ public interface DTOInterface {
     public String getPassword();
     public void setBalance(String balanceu);
     public String getBalance();
-    public void setMobileNumber(String mobile_number);
-    public String getMobileNumber();
-    public void setId(String id);
-    public String getId();
+    public void setAadharNumber(String mobile_number);
+    public String getAadharNumber();
+   
+   
     public void setDesignation(String designation);
     public String getDesignation();
-    //public void setIfscCode();
+   
     public String getIfscCode();
     public void setAddress(String address);
     public String getAddress();

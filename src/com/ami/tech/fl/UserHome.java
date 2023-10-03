@@ -1,23 +1,37 @@
 package com.ami.tech.fl;
 
 import java.awt.*;
+import java.awt.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.IOException;
 import javax.swing.*;
-
-
-
-
- import javax.swing.*;
+import javax.swing.*;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+import com.ami.tech.bl.Backend;
 
 public class UserHome extends JFrame implements ActionListener {
-
+  Backend backend;
   JPanel backgroundPanel, detailPanel, panel1;
   JLabel imgLabel, nameLabel, accountLabel, ifscLabel, addressLabel, welcmLabel;
   JLabel disname, disaccount, disifsc;
@@ -43,6 +57,7 @@ public class UserHome extends JFrame implements ActionListener {
   JLabel wdMsgLabel, wdAmountLabel;
 
   //Show Balance method variables
+  JFrame sbFrame;
   JPanel sbBackgroundPanel, sbHeadPanel;
   JButton sbBackButton, sbCancelButton;
   JLabel sbAccLabel, sbDisAccLabel, sbBalLabel, sbDisBalLabel, sbMsgLabel;
@@ -51,15 +66,21 @@ public class UserHome extends JFrame implements ActionListener {
   JTable saTable;
   DefaultTableModel model;
   JPanel saBackgroundPanel, saHeadPanel;
-  JButton saBackButton;
-  
-  
-  
-  
-  UserHome() {
-    super("User");
+  JButton saBackButton, saExportButton;
+
+  UserHome(Backend backend) {
+   super("User");
+    this.backend=backend;
+    
     setSize(1200, 700);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    int centerX = (int) (screenSize.getWidth() - this.getWidth()) / 2;
+    int centerY = (int) (screenSize.getHeight() - this.getHeight()) / 2;
+
+    // Set the frame's location to the center of the screen
+    this.setLocation(centerX, centerY);
 
     backgroundPanel =
       new JPanel() {
@@ -68,9 +89,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -89,7 +108,7 @@ public class UserHome extends JFrame implements ActionListener {
     panel1.setBounds(0, 0, 1500, 40);
     panel1.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i7 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i7 = new ImageIcon("Resources/images/back.png");
     Image i8 = i7.getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
 
     backButton = new JButton("Back", new ImageIcon(i8));
@@ -98,7 +117,7 @@ public class UserHome extends JFrame implements ActionListener {
     // button3.setForeground(Color.WHITE);
     backButton.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i17 = new ImageIcon("../Resources/images/logout.jpg");
+    ImageIcon i17 = new ImageIcon("Resources/images/logout.jpg");
     Image i18 = i17.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     logoutButton = new JButton("Log out", new ImageIcon(i18));
@@ -107,7 +126,7 @@ public class UserHome extends JFrame implements ActionListener {
     logoutButton.setForeground(Color.WHITE);
     logoutButton.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/payment.jpg");
+    ImageIcon i1 = new ImageIcon("Resources/images/payment.jpg");
     Image i2 = i1.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     button1 = new JButton("Make Payment", new ImageIcon(i2));
@@ -116,7 +135,7 @@ public class UserHome extends JFrame implements ActionListener {
     // button1.setForeground(Color.WHITE);
     button1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i3 = new ImageIcon("../Resources/images/deposit.png");
+    ImageIcon i3 = new ImageIcon("Resources/images/deposit.png");
     Image i4 = i3.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     button2 = new JButton("Deposit", new ImageIcon(i4));
@@ -125,7 +144,7 @@ public class UserHome extends JFrame implements ActionListener {
     button2.setForeground(Color.WHITE);
     button2.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i5 = new ImageIcon("../Resources/images/withdraw.jpg");
+    ImageIcon i5 = new ImageIcon("Resources/images/withdraw.jpg");
     Image i6 = i5.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     button3 = new JButton("Withdraw", new ImageIcon(i6));
@@ -134,7 +153,7 @@ public class UserHome extends JFrame implements ActionListener {
     // button3.setForeground(Color.WHITE);
     button3.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i9 = new ImageIcon("../Resources/images/admin_accd.jpg");
+    ImageIcon i9 = new ImageIcon("Resources/images/admin_accd.jpg");
     Image i10 = i9.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     button4 = new JButton("Account Details", new ImageIcon(i10));
@@ -143,7 +162,7 @@ public class UserHome extends JFrame implements ActionListener {
     // logoutButton.setForeground(Color.WHITE);
     button4.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-    ImageIcon i14 = new ImageIcon("../Resources/images/acc_balance.png");
+    ImageIcon i14 = new ImageIcon("Resources/images/acc_balance.png");
     Image i15 = i14.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 
     button5 = new JButton("Check Balance", new ImageIcon(i15));
@@ -157,7 +176,7 @@ public class UserHome extends JFrame implements ActionListener {
     detailPanel.setBackground(Color.lightGray);
     detailPanel.setLayout(new BorderLayout());
 
-    ImageIcon i11 = new ImageIcon("../Resources/images/admin_img.jpg");
+    ImageIcon i11 = new ImageIcon("Resources/images/admin_img.jpg");
     Image i12 = i11.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);
     // ImageIcon i13=new ImageIcon(i12);
     imgLabel = new JLabel(new ImageIcon(i12));
@@ -184,27 +203,28 @@ public class UserHome extends JFrame implements ActionListener {
     welcmLabel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
     welcmLabel.setForeground(Color.RED);
 
-    disname = new JLabel("");
+    disname = new JLabel(backend.getName());
     disname.setBounds(200, 140, 300, 40);
     disname.setFont(new Font("Times New Roman", Font.PLAIN, 16));
     disname.setBackground(Color.WHITE);
     disname.setOpaque(true);
 
-    disaccount = new JLabel("");
+    disaccount = new JLabel(backend.getAccountNumber());
     disaccount.setBounds(200, 210, 300, 40);
     disaccount.setFont(new Font("Times New Roman", Font.PLAIN, 16));
     disaccount.setBackground(Color.WHITE);
     disaccount.setOpaque(true);
 
-    disifsc = new JLabel("");
+    disifsc = new JLabel(backend.getIfscCode());
     disifsc.setBounds(200, 270, 300, 40);
     disifsc.setFont(new Font("Times New Roman", Font.PLAIN, 16));
     disifsc.setBackground(Color.WHITE);
     disifsc.setOpaque(true);
 
-    disaddress = new JTextArea("");
+    disaddress = new JTextArea(backend.getAddress());
     disaddress.setBounds(200, 340, 300, 80);
     disaddress.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+    
     disaddress.setBackground(Color.WHITE);
     disaddress.setOpaque(true);
     disaddress.setLineWrap(true);
@@ -223,6 +243,7 @@ public class UserHome extends JFrame implements ActionListener {
     button3.addActionListener(this);
     button4.addActionListener(this);
     button5.addActionListener(this);
+    backButton.addActionListener(this);
 
     add(backButton);
     add(logoutButton);
@@ -269,7 +290,11 @@ public class UserHome extends JFrame implements ActionListener {
     } else if (actionEvent.getSource() == logoutButton) {
       this.setVisible(false);
       new Home().setVisible(true);
-    } else if (actionEvent.getSource() == one) {
+    }else if(actionEvent.getSource()==backButton){
+      this.setVisible(false);
+      new Home().setVisible(true);
+    } 
+    else if (actionEvent.getSource() == one) {
       wdAmountArea.append("1");
     } else if (actionEvent.getSource() == two) {
       wdAmountArea.append("2");
@@ -300,6 +325,10 @@ public class UserHome extends JFrame implements ActionListener {
         String newText = currentText.substring(0, currentText.length() - 1);
         wdAmountArea.setText(newText);
       }
+    }else if(actionEvent.getSource()==sbCancelButton){
+      sbFrame.dispose();
+    }else if(actionEvent.getSource()==sbBackButton){
+      sbFrame.dispose();
     }
   }
 
@@ -320,9 +349,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -341,7 +368,7 @@ public class UserHome extends JFrame implements ActionListener {
     headPanel.setBounds(0, 0, 1500, 30);
     headPanel.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i1 = new ImageIcon("Resources/images/back.png");
     Image i1i = i1.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
 
     backButton = new JButton("Back", new ImageIcon(i1i));
@@ -456,9 +483,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -477,7 +502,7 @@ public class UserHome extends JFrame implements ActionListener {
     depositHeadPanel.setBounds(0, 0, 1500, 30);
     depositHeadPanel.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i1 = new ImageIcon("Resources/images/back.png");
     Image i1i = i1.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
 
     depositBackButton = new JButton("Back", new ImageIcon(i1i));
@@ -564,9 +589,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -585,7 +608,7 @@ public class UserHome extends JFrame implements ActionListener {
     wdHeadPanel.setBounds(0, 0, 1500, 30);
     wdHeadPanel.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i1 = new ImageIcon("Resources/images/back.png");
     Image i1i = i1.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
 
     wdBackButton = new JButton("Back", new ImageIcon(i1i));
@@ -717,7 +740,7 @@ public class UserHome extends JFrame implements ActionListener {
   }
 
   private void showBalance() {
-    JFrame sbFrame = new JFrame("Balance");
+    sbFrame = new JFrame("Balance");
     sbFrame.setSize(300, 300);
     sbFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -733,9 +756,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -754,7 +775,7 @@ public class UserHome extends JFrame implements ActionListener {
     sbHeadPanel.setBounds(0, 0, 1500, 30);
     sbHeadPanel.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i1 = new ImageIcon("Resources/images/back.png");
     Image i1i = i1.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
 
     sbBackButton = new JButton("Back", new ImageIcon(i1i));
@@ -771,21 +792,22 @@ public class UserHome extends JFrame implements ActionListener {
     sbBalLabel.setBounds(20, 100, 130, 30);
     sbBalLabel.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 
-    sbDisAccLabel = new JLabel("");
+    sbDisAccLabel = new JLabel(backend.getAccountNumber());
     sbDisAccLabel.setBounds(150, 50, 125, 30);
     sbDisAccLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
     sbDisAccLabel.setBackground(Color.WHITE);
     sbDisAccLabel.setOpaque(true);
 
-    sbDisBalLabel = new JLabel("");
+    sbDisBalLabel = new JLabel(backend.getBalance());
     sbDisBalLabel.setBounds(150, 100, 125, 30);
     sbDisBalLabel.setFont(new Font("Times New Roman", Font.PLAIN, 17));
     sbDisBalLabel.setBackground(Color.WHITE);
     sbDisBalLabel.setOpaque(true);
 
-    sbMsgLabel = new JLabel("sdfasdfsadfsadff");
-    sbMsgLabel.setBounds(20, 140, 270, 30);
-    sbMsgLabel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+    sbMsgLabel = new JLabel("Successfully fetched");
+    sbMsgLabel.setBounds(80, 140, 270, 30);
+    sbMsgLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+    sbMsgLabel.setForeground(Color.GREEN);
 
     sbCancelButton = new JButton("Cancel");
     sbCancelButton.setBounds(70, 180, 170, 40);
@@ -793,20 +815,25 @@ public class UserHome extends JFrame implements ActionListener {
     sbCancelButton.setForeground(Color.WHITE);
     sbDisBalLabel.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 
+    sbCancelButton.addActionListener(this);
+    
+    sbBackButton.addActionListener(this);
+
     sbFrame.add(sbBackButton);
     sbFrame.add(sbAccLabel);
     sbFrame.add(sbBalLabel);
     sbFrame.add(sbDisAccLabel);
     sbFrame.add(sbDisBalLabel);
     sbFrame.add(sbCancelButton);
-
+sbFrame.add(sbMsgLabel);
     sbFrame.add(sbHeadPanel);
     sbFrame.add(sbBackgroundPanel);
     sbFrame.setVisible(true);
   }
 
   private void showAcc() {
-    JFrame saFrame = new JFrame("Balance");
+    JFrame saFrame = new JFrame("Account Details");
+    // JFrame saFrame = new JFrame("Balance");
     saFrame.setSize(600, 600);
     saFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -814,7 +841,6 @@ public class UserHome extends JFrame implements ActionListener {
     int centerY = (int) (this.getHeight() - saFrame.getHeight()) / 2;
 
     saFrame.setLocation(centerX, centerY);
-
     saBackgroundPanel =
       new JPanel() {
         @Override
@@ -822,9 +848,7 @@ public class UserHome extends JFrame implements ActionListener {
           super.paintComponent(g);
 
           // Load your image
-          ImageIcon imageIcon = new ImageIcon(
-            "../Resources/images/user_back.jpg"
-          ); // Replace with your image path
+          ImageIcon imageIcon = new ImageIcon("Resources/images/user_back.jpg"); // Replace with your image path
 
           // Draw the image as the background
           g.drawImage(
@@ -843,7 +867,7 @@ public class UserHome extends JFrame implements ActionListener {
     saHeadPanel.setBounds(0, 0, 1500, 30);
     saHeadPanel.setBackground(Color.DARK_GRAY);
 
-    ImageIcon i1 = new ImageIcon("../Resources/images/back.png");
+    ImageIcon i1 = new ImageIcon("Resources/images/back.png");
     Image i1i = i1.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
 
     saBackButton = new JButton("Back", new ImageIcon(i1i));
@@ -851,249 +875,318 @@ public class UserHome extends JFrame implements ActionListener {
     // button3.setBackground(Color.RED);
     // button3.setForeground(Color.WHITE);
     saBackButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     
-    
-    String[][] data = {
-      {"111", "Do1111e", "1111130" , "asdjflas111111djfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"},
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
-      ,
-      
-      {"John", "Doe", "30" , "asdjflasdjfljas"},
-      {"Jane", "Smith", "25" , "asdjflasdjfljas"},
-      {"Bob", "Johnson", "40" , "asdjflasdjfljas"}
 
+    model =
+      new DefaultTableModel(
+        new Object[][] {
+          { "1", "Alice", "25" },
+          { "2", "Bob", "30" },
+          { "3", "Charlie", "22" },
+          { "4", "David", "35" },
+          { "5", "Eve", "28" },
+          { "6", "Frank", "29" },
+          { "7", "Grace", "31" },
+          { "8", "Hannah", "26" },
+          { "9", "Ivy", "27" },
+          { "10", "Jack", "33" },
+          { "1", "Alice", "25" },
+          { "2", "Bob", "30" },
+          { "3", "Charlie", "22" },
+          { "4", "David", "35" },
+          { "5", "Eve", "28" },
+          { "6", "Frank", "29" },
+          { "7", "Grace", "31" },
+          { "8", "Hannah", "26" },
+          { "9", "Ivy", "27" },
+          { "10", "Jack", "33" },
+          { "1", "Alice", "25" },
+          { "2", "Bob", "30" },
+          { "3", "Charlie", "22" },
+          { "4", "David", "35" },
+          { "5", "Eve", "28" },
+          { "6", "Frank", "29" },
+          { "7", "Grace", "31" },
+          { "8", "Hannah", "26" },
+          { "9", "Ivy", "27" },
+          { "10564654", "Jack", "33" },
+          // Add more rows here...
+        },
+        new Object[] { "ID", "Name", "Age" }
+      );
+    // model.addRow(new Object[] { "ajdflj", "sajfj", "djsfkjaskd;ldf" });
+    // model.addRow(new Object[] { "jdsfljasdl;", "0rtuiq", "lksjdflkasdj" });
 
-  };
+    // model.addColumn("col1");
+    // model.addColumn("Col2");
+    // model.addColumn("col3");
 
- 
-
-  String[] columnNames = {"First Name", "Last Name", "Age", "sejfjasd;"};
-  model=new DefaultTableModel(data, columnNames);
- 
-    saTable=new JTable(model);
-   
-    saTable.setLayout(new BorderLayout());
-    // saTable.setBounds(50,50,500,300);
-    JScrollPane scrollPane= new JScrollPane(saTable);
-    // saTable.setLayout(new BorderLayout().CENTER);
+    saTable = new JTable(model);
+    saTable.setFont(new Font("Times New Roman", Font.PLAIN, 17));
     saTable.setEnabled(false);
+    JScrollPane scrollPane = new JScrollPane(saTable);
+    scrollPane.setBounds(100, 120, 400, 400);
 
+    // saExportButton = new JButton("Download");
+    // saExportButton.setBounds(400, 5, 130, 30);
+    // saExportButton.setBackground(Color.GREEN);
+    // saExportButton.setForeground(Color.WHITE);
 
+    // saExportButton.addActionListener(
+    //   new ActionListener() {
+    //     @Override
+    //     public void actionPerformed(ActionEvent e) {
+    //       exportTableToPDF(saTable);
+    //     }
+    //   }
+    // );
+    JLabel headingLabel=new JLabel("Account Details");
+    headingLabel.setBounds(220,60,200,40);
+    headingLabel.setForeground(Color.BLACK);
+    headingLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
 
-
-
-     
-        
-        
-    
-    
-    
-  
-    saFrame.add(saTable);
-    saFrame.add(scrollPane, BorderLayout.CENTER);
+    saFrame.add(scrollPane);
+      saFrame.add(headingLabel);
     saFrame.add(saBackButton);
+    // saFrame.add(saExportButton);
     saFrame.add(saHeadPanel);
     saFrame.add(saBackgroundPanel);
     saFrame.setVisible(true);
-    
   }
 
+  // private static void exportTableToPDF(JTable table) {
+  //   try (PDDocument document = new PDDocument()) {
+  //     PDPage page = new PDPage(PDRectangle.A4);
+  //     document.addPage(page);
 
+  //     try (
+  //       PDPageContentStream contentStream = new PDPageContentStream(
+  //         document,
+  //         page
+  //       )
+  //     ) {
+  //       int margin = 50;
+  //       int yStart = (int) page.getMediaBox().getHeight() - margin;
+  //       int tableWidth = (int) page.getMediaBox().getWidth() - 2 * margin;
+  //       float yPosition = yStart;
+  //       int rowsPerPage = 10;
+  //       int rows = table.getRowCount();
+  //       int cols = table.getColumnCount();
+  //       int fontSize = 12;
+  //       File fontFile = new File(
+  //         "C:\\Users\\HITS\\Desktop\\Banking Project\\Banking-System\\montserrat-font\\MontserratBoldItalic-4B3w9.ttf"
+  //       );
+  //       PDType0Font font = PDType0Font.load(document, fontFile);
 
- 
+  //       float tableHeight = 20f; // Adjust as needed
 
+  //       // Create the table headers
+  //       contentStream.setFont(font, fontSize);
+  //       contentStream.setLineWidth(1f);
+  //       contentStream.setNonStrokingColor(Color.BLACK);
 
-    // private JFrame frame;
-    // private JTable table;
-    // private DefaultTableModel tableModel;
-    // private JButton prevButton;
-    // private JButton nextButton;
-    // private int currentPage = 1;
-    // private int pageSize = 10;
-    // private Object[][] data;  // Your data source
+  //       float marginX = margin;
+  //       for (int i = 0; i < cols; i++) {
+  //         contentStream.beginText();
+  //         contentStream.newLineAtOffset(marginX, yPosition - tableHeight);
+  //         contentStream.showText(table.getColumnName(i));
+  //         contentStream.endText();
+  //         marginX += tableWidth / cols;
+  //       }
 
-    // public void TablePaginationApp() {
-    //     // Initialize your data here (e.g., from a database or a list)
-    //     // Example data initialization:
-    //     data = new Object[][]{
-    //             {"Row 1", "Data 1"},
-    //             {"Row 2", "Data 2"},
-    //             {"Row 2", "Data 3"},
-    //             {"Row 2", "Data 4"},
-    //             {"Row 2", "Data 5"},
-    //             {"Row 2", "Data 6"},
-    //             {"Row 2", "Data 7"},
-    //             {"Row 2", "Data 8"},
-    //             {"Row 2", "Data 9"},
-    //             {"Row 2", "Data 10"},
-    //             {"Row 2", "Data 11"},
-    //             {"Row 2", "Data 12"},
-    //             {"Row 2", "Data 13"},
-    //             {"Row 2", "Data 14"},
-    //             {"Row 2", "Data 15"},
-    //             {"Row 2", "Data 16"},
-    //             {"Row 2", "Data 17"},
-    //             {"Row 2", "Data 18"},
-    //             {"Row 2", "Data 19"},
-    //             {"Row 2", "Data 20"},
-    //             {"Row 2", "Data 21"},
-    //             {"Row 2", "Data 22"},
-    //             {"Row 2", "Data 2"},
+  //       yPosition -= tableHeight;
 
-    //              {"Row 1", "Data 1"},
-    //             {"Row 2", "Data 2"},
-    //             {"Row 2", "Data 3"},
-    //             {"Row 2", "Data 4"},
-    //             {"Row 2", "Data 5"},
-    //             {"Row 2", "Data 6"},
-    //             {"Row 2", "Data 7"},
-    //             {"Row 2", "Data 8"},
-    //             {"Row 2", "Data 9"},
-    //             {"Row 2", "Data 10"},
-    //             {"Row 2", "Data 11"},
-    //             {"Row 2", "Data 12"},
-    //             {"Row 2", "Data 13"},
-    //             {"Row 2", "Data 14"},
-    //             {"Row 2", "Data 15"},
-    //             {"Row 2", "Data 16"},
-    //             {"Row 2", "Data 17"},
-    //             {"Row 2", "Data 18"},
-    //             {"Row 2", "Data 19"},
-    //             {"Row 2", "Data 20"},
-    //             {"Row 2", "Data 21"},
-    //             {"Row 2", "Data 22"},
-    //             {"Row 2", "Data 2"},
-    //             // Add more rows as needed
-    //     };
- 
-    //     frame = new JFrame("Table Pagination Example");
-    //     frame.setLayout(new BorderLayout());
-    //     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  //       // Create the table content
+  //       contentStream.setFont(font, fontSize);
+  //       contentStream.setLineWidth(1f);
+  //       for (int i = 0; i < Math.min(rows, rowsPerPage); i++) {
+  //         yPosition -= tableHeight;
+  //         contentStream.addRect(margin, yPosition, tableWidth, tableHeight);
+  //         contentStream.stroke();
+      
+  //         marginX = margin;
+  //         for (int j = 0; j < cols; j++) {
+  //             String cellValue = (table.getValueAt(i, j) != null) ? table.getValueAt(i, j).toString() : "";
+  //             contentStream.beginText();
+  //             contentStream.newLineAtOffset(marginX, yPosition - (tableHeight / 2));
+  //             contentStream.showText(cellValue);
+  //             contentStream.endText();
+  //             marginX += tableWidth / cols;
+  //         }
+  //     }
 
-    //     tableModel = new DefaultTableModel(data, new String[]{"Column 1", "Column 2"});
-    //     table = new JTable(tableModel);
-    //     JScrollPane scrollPane = new JScrollPane(table);
+  //       // for (int i = 0; i < Math.min(rows, rowsPerPage); i++) {
+  //         // yPosition -= tableHeight;
+  //         // contentStream.addRect(margin, yPosition, tableWidth, tableHeight);
+  //         // contentStream.stroke();
 
-    //     prevButton = new JButton("Previous");
-    //     nextButton = new JButton("Next");
+  //         // marginX = margin;
+  //         // for (int j = 0; j < cols; j++) {
+  //           // contentStream.beginText();
+  //           // contentStream.newLineAtOffset(
+  //             // marginX,
+  //             // yPosition - (tableHeight / 2)
+  //           // );
+  //           // contentStream.showText(table.getValueAt(i, j).toString());
+  //           // contentStream.endText();
+  //           // marginX += tableWidth / cols;
+  //         // }
+  //       // }
 
-    //     JPanel buttonPanel = new JPanel();
-    //     buttonPanel.add(prevButton);
-    //     buttonPanel.add(nextButton);
+  //       contentStream.close();
+  //       String fileName = "table.pdf";
+  //       try {
+  //         document.save(new File(fileName));
+  //         JOptionPane.showMessageDialog(null, "Table exported to " + fileName);
+  //     } catch (IOException e) {
+  //         e.printStackTrace();
+  //         JOptionPane.showMessageDialog(null, "Error while saving PDF.");
+  //     }
+  //       document.save(new FileOutputStream(fileName));
+  //       document.close();
+  //       JOptionPane.showMessageDialog(null, "Table exported to " + fileName);
+  //     } catch (IOException e) {
+  //       // e.printStackTrace();
+  //       e.printStackTrace();
+  //           JOptionPane.showMessageDialog(null, "Error while saving PDF.");
 
-    //     frame.add(scrollPane, BorderLayout.CENTER);
-    //     frame.add(buttonPanel, BorderLayout.SOUTH);
+  //     }
+  //   } catch (IOException e) {
+  //     // e.printStackTrace();
+  //     e.printStackTrace();
+  //           JOptionPane.showMessageDialog(null, "Error while saving PDF.");
+  //   }
+  // }
 
-    //     prevButton.addActionListener(new ActionListener() {
-    //         @Override
-    //         public void actionPerformed(ActionEvent e) {
-    //             showPreviousPage();
-    //         }
-    //     });
+  // private JFrame frame;
+  // private JTable table;
+  // private DefaultTableModel tableModel;
+  // private JButton prevButton;
+  // private JButton nextButton;
+  // private int currentPage = 1;
+  // private int pageSize = 10;
+  // private Object[][] data;  // Your data source
 
-    //     nextButton.addActionListener(new ActionListener() {
-    //         @Override
-    //         public void actionPerformed(ActionEvent e) {
-    //             showNextPage();
-    //         }
-    //     });
+  // public void TablePaginationApp() {
+  //     // Initialize your data here (e.g., from a database or a list)
+  //     // Example data initialization:
+  //     data = new Object[][]{
+  //             {"Row 1", "Data 1"},
+  //             {"Row 2", "Data 2"},
+  //             {"Row 2", "Data 3"},
+  //             {"Row 2", "Data 4"},
+  //             {"Row 2", "Data 5"},
+  //             {"Row 2", "Data 6"},
+  //             {"Row 2", "Data 7"},
+  //             {"Row 2", "Data 8"},
+  //             {"Row 2", "Data 9"},
+  //             {"Row 2", "Data 10"},
+  //             {"Row 2", "Data 11"},
+  //             {"Row 2", "Data 12"},
+  //             {"Row 2", "Data 13"},
+  //             {"Row 2", "Data 14"},
+  //             {"Row 2", "Data 15"},
+  //             {"Row 2", "Data 16"},
+  //             {"Row 2", "Data 17"},
+  //             {"Row 2", "Data 18"},
+  //             {"Row 2", "Data 19"},
+  //             {"Row 2", "Data 20"},
+  //             {"Row 2", "Data 21"},
+  //             {"Row 2", "Data 22"},
+  //             {"Row 2", "Data 2"},
 
-    //     frame.pack();
-    //     frame.setVisible(true);
-    // }
+  //              {"Row 1", "Data 1"},
+  //             {"Row 2", "Data 2"},
+  //             {"Row 2", "Data 3"},
+  //             {"Row 2", "Data 4"},
+  //             {"Row 2", "Data 5"},
+  //             {"Row 2", "Data 6"},
+  //             {"Row 2", "Data 7"},
+  //             {"Row 2", "Data 8"},
+  //             {"Row 2", "Data 9"},
+  //             {"Row 2", "Data 10"},
+  //             {"Row 2", "Data 11"},
+  //             {"Row 2", "Data 12"},
+  //             {"Row 2", "Data 13"},
+  //             {"Row 2", "Data 14"},
+  //             {"Row 2", "Data 15"},
+  //             {"Row 2", "Data 16"},
+  //             {"Row 2", "Data 17"},
+  //             {"Row 2", "Data 18"},
+  //             {"Row 2", "Data 19"},
+  //             {"Row 2", "Data 20"},
+  //             {"Row 2", "Data 21"},
+  //             {"Row 2", "Data 22"},
+  //             {"Row 2", "Data 2"},
+  //             // Add more rows as needed
+  //     };
 
-    // private void showPreviousPage() {
-    //     if (currentPage > 0) {
-    //         currentPage--;
-    //         updateTableData();
-    //     }
-    // }
+  //     frame = new JFrame("Table Pagination Example");
+  //     frame.setLayout(new BorderLayout());
+  //     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    // private void showNextPage() {
-    //     if (currentPage < (data.length - pageSize)) {
-    //         currentPage++;
-    //         updateTableData();
-    //     }
-    // }
+  //     tableModel = new DefaultTableModel(data, new String[]{"Column 1", "Column 2"});
+  //     table = new JTable(tableModel);
+  //     JScrollPane scrollPane = new JScrollPane(table);
 
-    // private void updateTableData() {
-    //     int startIndex = currentPage * pageSize;
-    //     int endIndex = Math.min(startIndex + pageSize, data.length);
-    //     Object[][] newData = new Object[endIndex - startIndex][tableModel.getColumnCount()];
+  //     prevButton = new JButton("Previous");
+  //     nextButton = new JButton("Next");
 
-    //     for (int i = startIndex; i < endIndex; i++) {
-    //         newData[i - startIndex] = data[i];
-    //     }
+  //     JPanel buttonPanel = new JPanel();
+  //     buttonPanel.add(prevButton);
+  //     buttonPanel.add(nextButton);
 
-    //     tableModel.setDataVector(newData, new String[]{"Column 1", "Column 2"});
-    // }
+  //     frame.add(scrollPane, BorderLayout.CENTER);
+  //     frame.add(buttonPanel, BorderLayout.SOUTH);
 
-    // public static void main(String[] args) {
-    //    
-    // }
+  //     prevButton.addActionListener(new ActionListener() {
+  //         @Override
+  //         public void actionPerformed(ActionEvent e) {
+  //             showPreviousPage();
+  //         }
+  //     });
 
+  //     nextButton.addActionListener(new ActionListener() {
+  //         @Override
+  //         public void actionPerformed(ActionEvent e) {
+  //             showNextPage();
+  //         }
+  //     });
 
+  //     frame.pack();
+  //     frame.setVisible(true);
+  // }
+
+  // private void showPreviousPage() {
+  //     if (currentPage > 0) {
+  //         currentPage--;
+  //         updateTableData();
+  //     }
+  // }
+
+  // private void showNextPage() {
+  //     if (currentPage < (data.length - pageSize)) {
+  //         currentPage++;
+  //         updateTableData();
+  //     }
+  // }
+
+  // private void updateTableData() {
+  //     int startIndex = currentPage * pageSize;
+  //     int endIndex = Math.min(startIndex + pageSize, data.length);
+  //     Object[][] newData = new Object[endIndex - startIndex][tableModel.getColumnCount()];
+
+  //     for (int i = startIndex; i < endIndex; i++) {
+  //         newData[i - startIndex] = data[i];
+  //     }
+
+  //     tableModel.setDataVector(newData, new String[]{"Column 1", "Column 2"});
+  // }
+
+  // public static void main(String[] args) {
+  //
+  // }
 
   public static void main(String args[]) {
-    new UserHome().setVisible(true);
+    // new UserHome().setVisible(true);
   }
 }
